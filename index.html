@@ -57,7 +57,7 @@
         <div class="hero-card">
           <div class="meta-row">
             <span>插件版本</span>
-            <strong>0.2.4</strong>
+            <strong>0.2.5</strong>
           </div>
           <div class="meta-row">
             <span>演示环境</span>
@@ -132,6 +132,7 @@
                 <h3>需要额外依赖的格式</h3>
                 <ul>
                   <li><code>docx / pdf / pptx / xlsx / xls</code> 需要 <code>markitdown</code></li>
+                  <li><code>epub / mobi / azw3</code> 支持电子书导入；EPUB 可回退到 <code>pandoc</code>，MOBI/AZW3 可回退到 Calibre 的 <code>ebook-convert</code></li>
                   <li>扫描版 PDF 的 OCR 依赖 <code>python3</code>、<code>tesseract</code></li>
                   <li>旧版 <code>.doc</code> 建议安装 <code>LibreOffice</code></li>
                 </ul>
@@ -291,27 +292,29 @@
           <section class="step panel" id="step-07">
             <div class="step-copy">
               <p class="step-index">Step 07</p>
-              <h2>按需安装 markitdown、python3、tesseract 和 pypdfium2</h2>
+              <h2>按需安装 markitdown、python3、tesseract、pypdfium2 和电子书转换器</h2>
               <p>
                 如果你目前只打算导入 <code>txt</code> 或 <code>md</code>，这一步可以先跳过。
                 但如果你接下来要导入 <code>docx</code>、<code>pdf</code>、
-                <code>pptx</code>、<code>xlsx</code> 或扫描版 PDF，就建议把依赖一次装齐。
+                <code>pptx</code>、<code>xlsx</code>、扫描版 PDF，或 <code>epub</code>、<code>mobi</code>、<code>azw3</code> 电子书，就建议把依赖一次装齐。
               </p>
               <div class="deps-grid">
                 <article class="info-card">
-                  <h3>这 4 个依赖分别做什么</h3>
+                  <h3>这些依赖分别做什么</h3>
                   <ul>
-                    <li><code>markitdown</code>：负责把 docx、pdf、pptx、xlsx 等文件转换成 Markdown</li>
+                    <li><code>markitdown</code>：负责把 docx、pdf、pptx、xlsx 等文件转换成 Markdown，也可处理部分电子书</li>
                     <li><code>python3</code>：OCR 备用链路的运行环境</li>
                     <li><code>tesseract</code>：扫描版 PDF 的文字识别引擎</li>
                     <li><code>pypdfium2</code>：OCR 脚本读取 PDF 页面的 Python 依赖</li>
+                    <li><code>pandoc</code>：EPUB 电子书的备用转换器</li>
+                    <li><code>Calibre / ebook-convert</code>：MOBI、AZW3 电子书的备用转换器</li>
                   </ul>
                 </article>
                 <article class="info-card warning">
                   <h3>推荐顺序</h3>
                   <ul>
                     <li>先安装 <code>Homebrew</code></li>
-                    <li>再装 <code>python3</code> 和 <code>tesseract</code></li>
+                    <li>再装 <code>python3</code>、<code>tesseract</code>、<code>pandoc</code> 和 <code>Calibre</code></li>
                     <li>最后装 <code>markitdown</code> 和 <code>pypdfium2</code></li>
                   </ul>
                 </article>
@@ -324,8 +327,9 @@
                 </article>
 
                 <article class="command-card">
-                  <h3>2. 安装 python3 和 tesseract</h3>
-                  <pre><code>brew install python tesseract</code></pre>
+                  <h3>2. 安装 python3、tesseract、pandoc 和 Calibre</h3>
+                  <pre><code>brew install python tesseract pandoc
+brew install --cask calibre</code></pre>
                 </article>
 
                 <article class="command-card">
@@ -339,6 +343,8 @@ python3 -m pip install markitdown pypdfium2</code></pre>
                   <pre><code>python3 --version
 tesseract --version
 markitdown --version
+pandoc --version
+ebook-convert --version
 python3 -c "import pypdfium2; print(pypdfium2.__version__)"</code></pre>
                 </article>
               </div>
@@ -406,10 +412,11 @@ python3 -c "import pypdfium2; print(pypdfium2.__version__)"</code></pre>
               </article>
 
               <article>
-                <h3>安装成功了，为什么 docx 或 pdf 还不能导入？</h3>
+                <h3>安装成功了，为什么 docx、pdf 或电子书还不能导入？</h3>
                 <p>
                   因为这些格式需要先转换成 Markdown。最常见的必需依赖是
-                  <code>markitdown</code>；扫描版 PDF 的 OCR 还会依赖
+                  <code>markitdown</code>；EPUB 可用 <code>pandoc</code> 作为备用转换器，MOBI/AZW3 可用 Calibre 的
+                  <code>ebook-convert</code> 作为备用转换器；扫描版 PDF 的 OCR 还会依赖
                   <code>python3</code>、<code>tesseract</code> 和
                   <code>pypdfium2</code>。
                 </p>
@@ -465,8 +472,8 @@ python3 -c "import pypdfium2; print(pypdfium2.__version__)"</code></pre>
               <article class="info-card warning">
                 <h3>下一步建议</h3>
                 <p>
-                  如果你接下来要导入 <code>docx</code>、<code>pdf</code>、<code>pptx</code> 或扫描件，再回到设置页补装
-                  <code>markitdown</code>、OCR 和旧 Office 兼容依赖即可。
+                  如果你接下来要导入 <code>docx</code>、<code>pdf</code>、<code>pptx</code>、扫描件或电子书，再回到设置页补装
+                  <code>markitdown</code>、OCR、旧 Office 兼容依赖、<code>pandoc</code> 和 Calibre 即可。
                 </p>
               </article>
             </div>
